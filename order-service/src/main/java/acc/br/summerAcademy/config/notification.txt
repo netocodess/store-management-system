@@ -1,0 +1,12 @@
+//    // Fila de notificação
+//    @Bean
+//    public Queue queueOrderCreatedNotification() {
+//        return new Queue("orders.v1.order-created.send-notification");
+//    }
+//
+//    @Bean
+//    public Binding binding() {
+//        return BindingBuilder.bind(queueOrderCreatedNotification())
+//                .to(directExchange())
+//                .with("order.created");
+//    }

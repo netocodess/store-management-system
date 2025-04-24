@@ -1,0 +1,19 @@
+server:
+  port: 8081
+spring:
+  datasource:
+    username: root
+    url: jdbc:mysql://localhost:3310/New_Store?createDatabaseIfNotExist=true&serverTimezone=UTC&useSSL=false
+    password: rootpassword
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    show-sql: 'true'
+    hibernate:
+      ddl-auto: 'update'
+      dialect: org.hibernate.dialect.MySQLDialect
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
