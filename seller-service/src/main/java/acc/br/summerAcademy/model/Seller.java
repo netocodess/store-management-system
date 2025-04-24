@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "store")
+@Table(name = "sellers")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -13,8 +13,8 @@ public class Seller {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long sellerId;
+    private Long id;
 
-    @Column(name = "storeName", nullable = false)
+    @Column(name = "store_name", nullable = false)
     private String storeName;
 }

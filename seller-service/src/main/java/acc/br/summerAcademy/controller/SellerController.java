@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/stores")
+@RequestMapping("/sellers")
 public class SellerController {
 
     private final SellerService sellerService;
@@ -18,13 +18,13 @@ public class SellerController {
     }
 
     @PostMapping
-    public ResponseEntity<Seller> saveSeller(@RequestBody Seller seller){
+    public ResponseEntity<Seller> createSeller(@RequestBody Seller seller){
         return ResponseEntity.ok(sellerService.create(seller));
     }
 
 
     @GetMapping
-    public ResponseEntity<List<Seller>> getAllSellers(){
+    public ResponseEntity<List<Seller>> findAllSellers(){
         return ResponseEntity.ok(sellerService.findAll());
     }
 

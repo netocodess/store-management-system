@@ -25,13 +25,13 @@ public class SellerService {
 
     public Seller findById(Long id) {
         return sellerRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Seller Not Found!"));
+                .orElseThrow(() -> new EntityNotFoundException("Seller Not Found!" + id));
     }
 
     public Seller deleteSeller(Long id) {
         Seller seller = sellerRepository.findById(id) // Busca o seller
-                .orElseThrow(() -> new EntityNotFoundException("Seller not found!"));
-        sellerRepository.delete(seller); // Deleta o seller
-        return seller; // Retorna o seller deletado
+                .orElseThrow(() -> new EntityNotFoundException("Seller not found!" + id));
+        sellerRepository.delete(seller);
+        return seller;
     }
 }
