@@ -3,6 +3,7 @@ package acc.br.summerAcademy.services;
 import acc.br.summerAcademy.model.Seller;
 import acc.br.summerAcademy.model.Stock;
 import acc.br.summerAcademy.repository.StockRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import acc.br.summerAcademy.repository.SellerRepository;
 
@@ -20,23 +21,24 @@ public class StockService {
         this.sellerRepository = sellerRepository;
     }
 
-    public Stock createProduct(Stock stock){
-        Long sellerId = stock.getSeller().getSellerId();
+    public Stock createStock(Stock stock){
+        Long sellerId = stock.getSeller().getId();
         Seller seller = sellerRepository.findById(sellerId)
                 .orElseThrow(() -> new RuntimeException("Seller not found with id: " + sellerId));
 
-        stock.setSeller(seller); // agora sim, está gerenciado
+        stock.setSeller(seller);
         return stockRepository.save(stock);
     }
 
-    public List<Stock> findAllProducts(){
+    public List<Stock> getAllStocks(){
         return stockRepository.findAll();
     }
 
-    public Stock findProductById(Long id){
-        Optional<Stock> product = stockRepository.findById(id);
-        return product.get();
+    public Stock getStockById(Long id) {
+        return stockRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Stock not found with id: " + id));
     }
+
     public Stock updateStock(Long id, Stock updatedStock) {
         Stock existingStock = stockRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
@@ -48,7 +50,7 @@ public class StockService {
         return stockRepository.save(existingStock);
     }
 
-    public void deleteProduct(Long id){
+    public void deleteStock(Long id){
         stockRepository.deleteById(id);
     }
 }

@@ -17,24 +17,29 @@ public class StockController {
     }
 
     @PostMapping
-    public ResponseEntity<Stock> createProduto(@RequestBody Stock stock) {
-        return ResponseEntity.ok(stockService.createProduct(stock));
+    public ResponseEntity<Stock> createStock(@RequestBody Stock stock) {
+        Stock created = stockService.createStock(stock);
+        return ResponseEntity.ok(created);
     }
 
     @GetMapping
-    public ResponseEntity<List<Stock>> getAllProducts() {
-        return ResponseEntity.ok(stockService.findAllProducts());
+    public ResponseEntity<List<Stock>> getAllStocks() {
+        return ResponseEntity.ok(stockService.getAllStocks());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Stock> getStockById(@PathVariable Long id) {
+        return ResponseEntity.ok(stockService.getStockById(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Stock> updateProduct(@PathVariable Long id, @RequestBody Stock stock) {
+    public ResponseEntity<Stock> updateStock(@PathVariable Long id, @RequestBody Stock stock) {
         return ResponseEntity.ok(stockService.updateStock(id, stock));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Stock> deleteProduct(@PathVariable Long id) {
-        stockService.deleteProduct(id);
+    public ResponseEntity<Void> deleteStock(@PathVariable Long id) {
+        stockService.deleteStock(id);
         return ResponseEntity.noContent().build();
     }
-
 }

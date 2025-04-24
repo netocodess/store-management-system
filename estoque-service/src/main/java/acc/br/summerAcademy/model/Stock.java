@@ -16,13 +16,13 @@ public class Stock {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long productId;
 
-    @Column(name = "product_Name")
+    @Column(name = "product_name", nullable = false)
     private String productName;
 
     @Column(nullable = false)
     private Long stockQuantity;
 
     @ManyToOne
-    @JoinColumn(name = "sellerId", nullable = false)
+    @JoinColumn(name = "seller_id", nullable = false)
     private Seller seller;
 }

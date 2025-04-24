@@ -30,7 +30,7 @@ public class OrderService {
                 savedOrder.getDateTimeDeparture(),
                 savedOrder.getCreatedAt(),
                 savedOrder.getUpdatedAt(),
-                savedOrder.getSeller().getSellerId()
+                savedOrder.getSeller().getId()
         );
 
         System.out.println("Evento enviado -->: " + event.toString());
