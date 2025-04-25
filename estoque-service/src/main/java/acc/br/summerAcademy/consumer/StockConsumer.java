@@ -1,11 +1,11 @@
 package acc.br.summerAcademy.consumer;
 
+import acc.br.summerAcademy.domain.model.Orders;
 import acc.br.summerAcademy.model.Stock;
 import acc.br.summerAcademy.repository.StockRepository;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Component;
-import acc.br.summerAcademy.domain.model.Order;
 
 import java.util.Optional;
 
@@ -20,16 +20,16 @@ public class StockConsumer {
         this.stockRepository = stockRepository;
     }
 
-    @RabbitListener(queues = "orders.v1.order-created")
-    public void processOrder(Order order) {
+    @RabbitListener(queues = "orders.v1.orders-created")
+    public void processOrder(Orders orders) {
         // Busca o produto pelo nome
-        Optional<Stock> produtoOptional = stockRepository.findByProductName(order.getProductName());
+        Optional<Stock> produtoOptional = stockRepository.findByProductName(orders.getProductName());
         if (produtoOptional.isPresent()) {
             Stock stock = produtoOptional.get();
-            if (stock.getStockQuantity() < order.getQuantity()) {
+            if (stock.getStockQuantity() < orders.getQuantity()) {
                 System.out.println("insufficient stock");
             } else {
-                stock.setStockQuantity(stock.getStockQuantity() - order.getQuantity());
+                stock.setStockQuantity(stock.getStockQuantity() - orders.getQuantity());
                 stockRepository.save(stock);
             }
         } else {
@@ -37,9 +37,9 @@ public class StockConsumer {
         }
 
         rabbitTemplate.convertAndSend(
-                "order.exchange", // Exchange existente
-                "order.status.updated",          // Routing key para status atualizado
-                order
+                "orders.exchange", // Exchange existente
+                "orders.status.updated",          // Routing key para status atualizado
+                orders
         );
     }
 }

@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import acc.br.summerAcademy.repository.SellerRepository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class StockService {
