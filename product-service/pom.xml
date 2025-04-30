@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>acc.br.summerAcademy</groupId>
-    <artifactId>stock-service</artifactId>
+    <artifactId>product-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>estoque</name>
     <description>estoque</description>
