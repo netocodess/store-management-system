@@ -5,15 +5,15 @@ import acc.br.summerAcademy.domain.TypeOfStatus;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-public record OrderCreatedEvent(
+public record OrderDTO(
         Long orderId,
-        BigDecimal productValue,
         String productName,
+        BigDecimal value,
         String description,
         Integer quantity,
         TypeOfStatus status,
-        LocalDateTime dateTimeDeparture,
         LocalDateTime createdAt,
         LocalDateTime updatedAt,
+        LocalDateTime dateTimeDeparture,
         Long sellerId
 ) { }
