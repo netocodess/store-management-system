@@ -19,7 +19,7 @@ public class RabbitMQConfig {
     // Declara a fila para cashback
     @Bean
     public Queue queueOrderStatusUpdated() {
-        return new Queue("orders.v1.order-status.updated");
+        return new Queue("order.v1.order-status.updated");
     }
 
     @Bean

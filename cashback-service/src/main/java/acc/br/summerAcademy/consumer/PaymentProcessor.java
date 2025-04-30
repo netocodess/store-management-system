@@ -21,7 +21,7 @@ public class PaymentProcessor {
     /**
      * Consumir mensagens da fila de pedidos e simular pagamento.
      */
-    @RabbitListener(queues = "orders.v1.orders-status.updated")
+    @RabbitListener(queues = "order.v1.order-status.updated")
     public void processOrder(Orders orders) {
         System.out.println("Recebendo pedido para processamento: " + orders);
 
@@ -34,8 +34,8 @@ public class PaymentProcessor {
 
         // Enviar o pedido atualizado para a fila de status
         rabbitTemplate.convertAndSend(
-                "orders.exchange", // Exchange existente
-                "orders.created",          // Routing key para status atualizado
+                "order.exchange",     // Exchange correta
+                "order.created",           // Routing key para status atualizado
                 orders
         );
     }

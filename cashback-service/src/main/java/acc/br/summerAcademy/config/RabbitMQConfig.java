@@ -21,7 +21,7 @@ public class RabbitMQConfig {
     }
     @Bean
     public Queue queueOrderCreatedNotification() {
-        return new Queue("orders.v1.order-created.send-notification");
+        return new Queue("order.v1.order-created.send-notification");
     }
 
     @Bean

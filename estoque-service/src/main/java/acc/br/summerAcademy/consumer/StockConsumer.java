@@ -20,25 +20,35 @@ public class StockConsumer {
         this.stockRepository = stockRepository;
     }
 
-    @RabbitListener(queues = "orders.v1.orders-created")
+    @RabbitListener(queues = "order.v1.order-created")
     public void processOrder(Orders orders) {
-        // Busca o produto pelo nome
-        Optional<Stock> produtoOptional = stockRepository.findByProductName(orders.getProductName());
+        Optional<Stock> produtoOptional = stockRepository.findByProductNameAndSellerId(
+                orders.getProductName(),
+                orders.getSeller().getId()
+        );
+
         if (produtoOptional.isPresent()) {
             Stock stock = produtoOptional.get();
             if (stock.getStockQuantity() < orders.getQuantity()) {
-                System.out.println("insufficient stock");
-            } else {
-                stock.setStockQuantity(stock.getStockQuantity() - orders.getQuantity());
-                stockRepository.save(stock);
+                System.out.println("Estoque insuficiente para o produto: " + stock.getProductName());
+                // Aqui você pode enviar um status especial ou não enviar nada
+                return;
             }
+
+            // Atualiza o estoque
+            stock.setStockQuantity(stock.getStockQuantity() - orders.getQuantity());
+            stockRepository.save(stock);
+            System.out.println("Estoque atualizado para o produto: " + stock.getProductName());
+
         } else {
-            System.out.println("Product not found: ");
+            System.out.println("Produto não encontrado: " + orders.getProductName());
+            // Aqui você pode enviar uma mensagem de erro também
+            return;
         }
 
         rabbitTemplate.convertAndSend(
-                "orders.exchange", // Exchange existente
-                "orders.status.updated",          // Routing key para status atualizado
+                "order.exchange",
+                "order.status.updated",        // Routing key para status atualizado
                 orders
         );
     }

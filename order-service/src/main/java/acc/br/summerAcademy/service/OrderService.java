@@ -34,7 +34,7 @@ public class OrderService {
         );
 
         System.out.println("Evento enviado -->: " + event.toString());
-        rabbitTemplate.convertAndSend("orders.v1.orders-created.direct", "orders.created", event);
+        rabbitTemplate.convertAndSend("order.v1.order-created.direct", "order.created", event);
         System.out.println( "id " + event.getId_Pedido());
         System.out.println("product " + event.getProductName() + " is " + event.getStatus() + ".....");
         System.out.println("----Waiting.....----");

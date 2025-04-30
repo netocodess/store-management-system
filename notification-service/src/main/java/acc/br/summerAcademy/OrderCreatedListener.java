@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class OrderCreatedListener {
 
-    @RabbitListener(queues = "orders.v1.order-created.send-notification")
+    @RabbitListener(queues = "order.v1.order-created.send-notification")
     public void onOrderCreated(OrderCreatedEvent event) {
         System.out.println("Compra Concluída!\n" +
                 "Obrigado por realizar sua compra! \uD83C\uDF89\n" +
