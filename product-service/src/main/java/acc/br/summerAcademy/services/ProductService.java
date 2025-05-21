@@ -13,17 +13,13 @@ import java.util.List;
 public class ProductService {
 
     private final ProductRepository productRepository;
-    private final SellerRepository sellerRepository;
 
-    public ProductService(ProductRepository productRepository, SellerRepository sellerRepository) {
+    public ProductService(ProductRepository productRepository) {
         this.productRepository = productRepository;
-        this.sellerRepository = sellerRepository;
     }
 
     public Product createProduct(Product product) {
-        Seller seller = sellerRepository.findById(product.getSeller().getId())
-                .orElseThrow(() -> new RuntimeException("Seller not found with id: " + product.getSeller().getId()));
-        product.setSeller(seller);
+        // Nada de busca em Seller, assume que o sellerId já vem no payload
         return productRepository.save(product);
     }
 
@@ -38,13 +34,13 @@ public class ProductService {
 
     public Product updateProduct(Long id, Product updatedProduct) {
         Product existing = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Product not found with id: " + id));
 
         existing.setProductName(updatedProduct.getProductName());
         existing.setDescription(updatedProduct.getDescription());
         existing.setValue(updatedProduct.getValue());
         existing.setStockQuantity(updatedProduct.getStockQuantity());
-        existing.setSeller(updatedProduct.getSeller());
+        existing.setSellerId(updatedProduct.getSellerId());
 
         return productRepository.save(existing);
     }

@@ -22,10 +22,11 @@ public class ProductConsumer {
 
     @RabbitListener(queues = "order.v1.order-created")
     public void processOrder(Orders orders) {
-        Optional<Product> optionalProduct = productRepository.findById(orders.getProduct().getProductId());
+        Long productId = orders.getProductId();
+        Optional<Product> optionalProduct = productRepository.findById(productId);
 
         if (optionalProduct.isEmpty()) {
-            System.out.println("Produto não encontrado com ID: " + orders.getProduct().getProductId());
+            System.out.println("Produto não encontrado com ID: " + productId);
             return;
         }
 
