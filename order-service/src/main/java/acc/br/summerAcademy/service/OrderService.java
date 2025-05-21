@@ -1,18 +1,19 @@
 package acc.br.summerAcademy.service;
 
+import acc.br.summerAcademy.domain.TypeOfStatus;
 import acc.br.summerAcademy.domain.model.Orders;
 import acc.br.summerAcademy.dtos.OrderCreatedEvent;
 import acc.br.summerAcademy.dtos.OrderDTO;
+import acc.br.summerAcademy.dtos.OrderRequestDTO;
+import acc.br.summerAcademy.dtos.ProductResponseDTO;
 import acc.br.summerAcademy.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -21,22 +22,33 @@ public class OrderService {
 
     private final OrderRepository repository;
     private final RabbitTemplate rabbitTemplate;
+    private final ProductServiceClient productService;  // your client REST
+
+    public OrderDTO createOrder(OrderRequestDTO request) {
+        // 1️⃣ Persiste a order
+        Orders order = new Orders();
+        order.setProductId(request.productId());
+        order.setQuantity(request.quantity());
+        order.setStatus(TypeOfStatus.PROCESSING);
+        order.setDateTimeDeparture(request.dateTimeDeparture());
+        Orders saved = repository.save(order);
+
+        // 2️⃣ Busca dados do produto
+        ProductResponseDTO product = productService.getProductById(saved.getProductId());
 
 
-    public OrderDTO createOrder(Orders orders) {
-        Orders savedOrder = repository.save(orders);
-
+        // 3️⃣ Publica evento
         OrderCreatedEvent event = new OrderCreatedEvent(
-                savedOrder.getOrderId(),
-                savedOrder.getProduct().getValue(),
-                savedOrder.getProduct().getProductName(),
-                savedOrder.getProduct().getDescription(),
-                savedOrder.getQuantity(),
-                savedOrder.getStatus(),
-                savedOrder.getDateTimeDeparture(),
-                savedOrder.getCreatedAt(),
-                savedOrder.getUpdatedAt(),
-                savedOrder.getSeller().getId()
+                saved.getOrderId(),
+                product.value(),
+                product.productName(),
+                product.description(),
+                saved.getQuantity(),
+                saved.getStatus(),
+                saved.getDateTimeDeparture(),
+                saved.getCreatedAt(),
+                saved.getUpdatedAt(),
+                product.sellerId()
         );
 
         System.out.println("Evento enviado -->: " + event.toString());
@@ -45,50 +57,43 @@ public class OrderService {
         System.out.println("product " + event.productName() + " is " + event.status() + ".....");
         System.out.println("----Waiting.....----");
 
-        return convertToDTO(savedOrder);
 
+        // 4 retorna dto
+        return toDTO(saved, product);
     }
 
-
-    public Optional<Orders> getOrderById(Long orderId) {
-        Optional<Orders> order = repository.findById(orderId);
-
-
-        if (!order.isPresent()) {
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, "Order with ID " + orderId + " Not Found!"
-            );
-        }
-
-        return order;
+    public OrderDTO getOrderByIdDTO(Long orderId) {
+        Orders order = repository.findById(orderId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Order with ID " + orderId + " Not Found!"));
+        ProductResponseDTO product = productService.getProductById(order.getProductId());
+        return toDTO(order, product);
     }
 
-
-    public List<Orders> getAllOrders() {
+    public List<OrderDTO> getAllOrdersDTO() {
         List<Orders> orders = repository.findAll();
-
-        // Verifica se há pedidos, caso contrário lança um erro com mensagem personalizada
         if (orders.isEmpty()) {
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, "No Orders Found!"
-            );
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No Orders Found!");
         }
-
-        return orders;
+        return orders.stream()
+                .map(o -> toDTO(o, productService.getProductById(o.getProductId())))
+                .collect(Collectors.toList());
     }
 
-    private OrderDTO convertToDTO(Orders order) {
+    private OrderDTO toDTO(Orders order, ProductResponseDTO product) {
         return new OrderDTO(
                 order.getOrderId(),
-                order.getProduct().getProductName(),
-                order.getProduct().getValue(),
-                order.getProduct().getDescription(),
                 order.getQuantity(),
                 order.getStatus(),
                 order.getCreatedAt(),
                 order.getUpdatedAt(),
                 order.getDateTimeDeparture(),
-                order.getSeller().getId()
+                product.id(),
+                product.productName(),
+                product.description(),
+                product.value(),
+                product.stockQuantity(),
+                product.sellerId()
         );
     }
 }

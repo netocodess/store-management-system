@@ -7,13 +7,17 @@ import java.time.LocalDateTime;
 
 public record OrderDTO(
         Long orderId,
-        String productName,
-        BigDecimal value,
-        String description,
         Integer quantity,
         TypeOfStatus status,
         LocalDateTime createdAt,
         LocalDateTime updatedAt,
         LocalDateTime dateTimeDeparture,
+
+        // Data of product
+        Long productId,
+        String productName,
+        String description,
+        BigDecimal value,
+        Integer stockQuantity,
         Long sellerId
 ) { }
