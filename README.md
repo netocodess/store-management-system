@@ -88,13 +88,48 @@ Instale o [Docker](https://www.docker.com/) e rode o RabbitMQ localmente ou use 
 
 2. Configure as variáveis de ambiente no arquivo `application.yml` com as credenciais do MySQL e RabbitMQ.
 
-3. Execute a aplicação com o seguinte comando:
+3. Como este projeto é dividido em microserviços, cada um roda em uma porta diferente:
 
-   ```bash
-   ./mvnw spring-boot:run
-   ```
+Seller Service: porta 8080
 
-4. O projeto estará acessível em `http://localhost:8080`.
+Orders Service: porta 8081
+
+Notifications Service: porta 8082
+
+Product Service: porta 8087
+
+Cashback Service: porta 8086
+
+Para que as filas, exchanges, bindings e routing keys do RabbitMQ sejam criadas corretamente, na primeira vez que rodar o projeto, execute os microserviços na seguinte ordem:
+
+Seller Service (porta 8080)
+
+Orders Service (porta 8081)
+
+Product Service (porta 8087)
+
+Cashback Service (porta 8086)
+
+Notifications Service (porta 8082)
+
+Execute cada microserviço com o comando abaixo, adaptando o diretório e a porta conforme necessário:
+
+```bash
+./mvnw spring-boot:run
+
+```
+
+Acesse cada serviço nas URLs:
+
+Seller: http://localhost:8080
+
+Orders: http://localhost:8081
+
+Notifications: http://localhost:8082
+
+Cashback: http://localhost:8086
+
+Product: http://localhost:8087
 
 
 ---
@@ -121,8 +156,8 @@ Você pode testar a API utilizando o [Swagger](https://swagger.io/) para explora
 - [x] Cadastro de vendedores
 - [x] Cadastro de produtos e controle de estoque
 - [x] Processo de compra e pagamento
-- [x] Envio de e-mails de confirmação
-- [ ] Implementação de integração com transportadoras (código de rastreio)
+- [ ] Envio de e-mails de confirmação
+- [x] Implementação de integração com transportadoras (código de rastreio)
 - [ ] Melhoria na interface de usuário
 - [ ] Testes automatizados com integração CI/CD
 
@@ -162,4 +197,4 @@ Contribuições são bem-vindas! Se você deseja sugerir melhorias ou adicionar 
 [mysql-shield]: https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white
 [jwt-shield]: https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=json-web-tokens&logoColor=white
 [swagger-shield]: https://img.shields.io/badge/Swagger-85ea2d?style=for-the-badge&logo=swagger&logoColor=black
-```
+
