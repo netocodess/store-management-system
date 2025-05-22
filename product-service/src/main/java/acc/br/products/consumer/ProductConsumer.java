@@ -1,6 +1,7 @@
 package acc.br.products.consumer;
 
 import acc.br.orders.domain.model.Orders;
+import acc.br.orders.dtos.OrderCreatedEvent;
 import acc.br.products.model.Product;
 import acc.br.products.repository.ProductRepository;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -21,8 +22,8 @@ public class ProductConsumer {
     }
 
     @RabbitListener(queues = "order.v1.order-created")
-    public void processOrder(Orders orders) {
-        Long productId = orders.getProductId();
+    public void processOrder(OrderCreatedEvent event) {
+        Long productId = event.productId();
         Optional<Product> optionalProduct = productRepository.findById(productId);
 
         if (optionalProduct.isEmpty()) {
@@ -31,19 +32,19 @@ public class ProductConsumer {
         }
 
         Product product = optionalProduct.get();
-        if (product.getStockQuantity() < orders.getQuantity()) {
+        if (product.getStockQuantity() < event.quantity()) {
             System.out.println("Estoque insuficiente para o produto: " + product.getProductName());
             return;
         }
 
-        product.setStockQuantity(product.getStockQuantity() - orders.getQuantity());
+        product.setStockQuantity(product.getStockQuantity() - event.quantity());
         productRepository.save(product);
         System.out.println("Estoque atualizado para o produto: " + product.getProductName());
 
         rabbitTemplate.convertAndSend(
                 "order.exchange",
                 "order.status.updated",        // Routing key para status atualizado
-                orders
+                event
         );
     }
 }
