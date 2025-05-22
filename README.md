@@ -180,14 +180,6 @@ Contribuições são bem-vindas! Se você deseja sugerir melhorias ou adicionar 
     Voltar ao topo
   </a>
 </p>
-<style>
-  a:hover {
-    color: #218838; 
-  }
-</style>
-
-
-
 
 <!-- MARKDOWN LINKS & IMAGES -->
 [java-shield]: https://img.shields.io/badge/Java-007396?style=for-the-badge&logo=java&logoColor=white
