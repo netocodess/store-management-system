@@ -15,5 +15,6 @@ public record OrderCreatedEvent(
         LocalDateTime dateTimeDeparture,
         LocalDateTime createdAt,
         LocalDateTime updatedAt,
-        Long sellerId
+        Long sellerId,
+        Long productId
 ) { }

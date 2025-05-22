@@ -48,14 +48,14 @@ public class OrderService {
                 saved.getDateTimeDeparture(),
                 saved.getCreatedAt(),
                 saved.getUpdatedAt(),
-                product.sellerId()
+                product.sellerId(),
+                saved.getProductId()
         );
 
         System.out.println("Evento enviado -->: " + event.toString());
         rabbitTemplate.convertAndSend("order.v1.order-created.direct", "order.created", event);
-        System.out.println("id " + event.orderId());
         System.out.println("product " + event.productName() + " is " + event.status() + ".....");
-        System.out.println("----Waiting.....----");
+        System.out.println(" Waiting.....");
 
 
         // 4 retorna dto
