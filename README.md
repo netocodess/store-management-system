@@ -182,7 +182,7 @@ Contribuições são bem-vindas! Se você deseja sugerir melhorias ou adicionar 
 </p>
 <style>
   a:hover {
-    color: #218838; /* Tom de verde mais escuro para o hover */
+    color: #218838; 
   }
 </style>
 
